@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: training-webserver
+  labels:
+    app: training-webserver
+    tier: training
+spec:
+  type: NodePort
+  ports:
+  - port: 9010
+    nodePort : 30910
+    targetPort: "hanswebserver"
+  selector:
+    name: training-webserver
+    tier: training

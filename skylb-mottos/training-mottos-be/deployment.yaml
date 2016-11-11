@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mottos-be-han
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        name: mottos-be-han
+        tier: training
+    spec:
+      containers:
+      - name: mottos-be-han
+        image: 192.168.221.20:5000/training/mottos-be:1.0
+        command:
+          - /mottos/bin/mottos-be 
+          - --skylb-endpoints=skylb:1900
+          - --within-k8s=true
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 9100
+          protocol: TCP
+          name: mottosbe

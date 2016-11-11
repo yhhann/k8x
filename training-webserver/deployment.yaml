@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: training-webserver
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        name: training-webserver
+        tier: training
+    spec:
+      containers:
+      - name: training-webserver
+        image: docker-registry.eff.com/han/training-webserver:0.1.0
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 9000
+          protocol: TCP
+          name: hanswebserver

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fe-mottos
+  labels:
+    app: fe-mottos
+    tier: training
+spec:
+  type: NodePort
+  ports:
+  - port: 9000
+    nodePort: 30900
+    targetPort: "mottosfe"
+  selector:
+    name: fe-mottos
+    tier: training

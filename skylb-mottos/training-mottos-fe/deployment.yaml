@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: fe-mottos
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: fe-mottos
+        tier: training
+    spec:
+      containers:
+      - name: fe-mottos
+        image: 192.168.221.20:5000/training/mottos-fe:1.3
+        command:
+          - /mottos/bin/mottos-fe
+          - --skylb-endpoints=skylb:1900
+          - --within-k8s=true
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 9000
+          protocol: TCP
+          name: mottosfe

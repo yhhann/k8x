@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: beijing-bank
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: beijing-bank
+        tier: training
+    spec:
+      containers:
+      - name: beijing-bank
+        image: 192.168.221.20:5000/han/banking:0.1
+        command: [ "/bin/sh","-c","cat /bank/conf/database.conf" ]
+        volumeMounts:
+        - name: config-volume
+          mountPath: /bank/conf
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      volumes:
+      - name: config-volume
+        configMap:
+          name: trainingdb
+          items:
+          - key: database.conf
+            path: database.conf
+
