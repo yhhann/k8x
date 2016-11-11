@@ -1,0 +1,4 @@
+kubectl describe endpoints outer-grpc-service
+kubectl describe svc outer-grpc-service
+
+kubectl get pod -o yaml -l name=gateway|grep podIP

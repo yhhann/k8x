@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  labels:
+    app: gateway
+    tier: training
+spec:
+  type: NodePort
+  ports:
+  - port: 10000
+    nodePort: 31000
+    targetPort: 10000
+  selector:
+    name: gateway
+    tier: training

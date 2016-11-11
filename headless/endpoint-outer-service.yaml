@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: outer-grpc-service
+subsets:
+- 
+  addresses:
+    - ip: 192.168.64.176
+  ports:
+    - name: port1
+      port: 8081
