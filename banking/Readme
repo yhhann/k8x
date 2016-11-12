@@ -1,0 +1,17 @@
+1. 执行./banking -db-conf=./database.conf
+确认能够得到正确的日志输出，说明数据库环境正常。
+
+2. database.conf是程序要用到的数据库配置文件，cc里的命令把这个文件内容保存到k8s的configMap里。
+database.conf
+cc
+
+3. endpoint创建一个到外部postgresql的Endpoint，svc创建到外部的postgresql服务，使用上述Endpoint。
+endpoint-outer-service.yaml
+svc-outer-service.yaml
+
+4. beijing-bank的部署文件
+deployment.yaml
+
+5. 是个测试，便于登录到目标image的容器里，通过命令查看一切是否正常。
+sleep.yaml
+

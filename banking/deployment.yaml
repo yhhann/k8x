@@ -14,7 +14,7 @@ spec:
       - name: beijing-bank
         image: 192.168.221.20:5000/han/banking:0.1
         command:
-        - /banking/banking -db-conf=/banking/conf/database.conf
+        - /banking/banking
         volumeMounts:
         - name: config-volume
           mountPath: /bank/conf

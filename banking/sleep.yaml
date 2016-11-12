@@ -13,7 +13,9 @@ spec:
       containers:
       - name: beijing-bank
         image: 192.168.221.20:5000/han/banking:0.1
-        command: [ "/bin/sh","-c","cat /bank/conf/database.conf" ]
+        command:
+          - sleep
+          - "3600"
         volumeMounts:
         - name: config-volume
           mountPath: /bank/conf
@@ -30,5 +32,5 @@ spec:
           name: trainingdb
           items:
           - key: database.conf
-            path: database.conf
+            path: db.conf
 
