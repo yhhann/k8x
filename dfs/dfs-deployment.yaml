@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dfssvr
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: dfssvr
+        tier: dfssvr
+    spec:
+      containers:
+      - name: dfssvr
+        image: 192.168.221.20:5000/dfssvr/dfssvr:2.3
+        ports:
+        - containerPort: 10000
+          protocol: TCP
+        - containerPort: 1920
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 6000Mi
+          requests:
+            cpu: 200m
+            memory: 2000Mi
+        command:
+          - /dfs/bin/dfssvr 
+          - --server-name=dfssvr-in-k8s
+          - --listen-addr=:10000
+          - --zk-addr=dfs-zk
+          - --shard-dburi=dfs-shard
+          - --shard-name=shard
+          - --event-dbname=event
+          - --slog-dbname=slog
+          - --metrics-address=:1920
+          - --metrics-path=/metrics
+          - --gluster-log-dir=/tmp/dfssvr
+          - --health-check-interval=3600
+          - --logtostderr
+          - --v=2
+          - --register-addr=192.168.221.127:32000

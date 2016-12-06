@@ -1,0 +1,92 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    name: prom4dfs
+  name: prom4dfs
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: prom4dfs
+    spec:
+      containers:
+      - image: quay.io/prometheus/prometheus:v1.2.0
+        name: prom4dfs
+        command:
+        - "/bin/prometheus"
+        args:
+        - "-config.file=/etc/prometheus/prometheus.yml"
+        - "-storage.local.path=/prometheus"
+        - "-storage.local.retention=24h"
+        ports:
+        - containerPort: 9090
+          protocol: TCP
+        volumeMounts:
+        - mountPath: "/prometheus"
+          name: data
+        - mountPath: "/etc/prometheus"
+          name: config-volume
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 500m
+            memory: 2500Mi
+      volumes:
+      - emptyDir: {}
+        name: data
+      - configMap:
+          name: prom4dfs-config
+        name: config-volume
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prom4dfs-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 30s
+      scrape_timeout: 30s
+    scrape_configs:
+    - job_name: 'kubernetes_service_endpoints'
+      kubernetes_sd_configs:
+      - api_servers:
+        - 'https://kubernetes.default.svc'
+        in_cluster: true
+        role: endpoint
+
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_dfssvr] 
+          action: keep
+          regex: ok
+        - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape] 
+          action: keep
+          regex: true
+        - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+          action: replace
+          target_label: __scheme__
+          regex: (https?)
+        - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+          action: replace
+          target_label: __metrics_path__
+          regex: (.+)
+        - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+          action: replace
+          target_label: __address__
+          regex: (.+)(?::\d+);(\d+)
+          replacement: $1:$2
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_(.+)
+        - source_labels: [__meta_kubernetes_service_namespace]
+          action: replace
+          target_label: kubernetes_namespace
+        - source_labels: [__meta_kubernetes_service_name]
+          action: replace
+          target_label: kubernetes_name
+
