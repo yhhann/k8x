@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: skylb
+  labels:
+    app: skylb
+    tier: backend
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port:   '1920'
+spec:
+  ports:
+  - port: 1900
+    targetPort: 1900
+  selector:
+    name: skylb
+    tier: backend
+
